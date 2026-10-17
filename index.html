@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fruit Ninja – Slice the moment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="inmenu">
+<canvas id="c"></canvas>
+<video id="cam" playsinline muted></video>
+<div id="status">Camera off</div>
+<div id="hud" hidden>
+  <div class="sc glass"><b id="score">0</b><small id="best"></small></div>
+  <div id="lives" class="glass"><span id="hearts"><i class="h"></i><i class="h"></i><i class="h"></i></span><em id="timer" hidden></em></div>
+  <button id="pauseBtn" class="round glass" title="Pause (Esc)" aria-label="Pause">❚❚</button>
+</div>
+<button id="mute" class="round glass" title="Sound on/off" aria-label="Toggle sound">🔊</button>
+
+<section class="screen on" id="menu">
+  <i class="orb o1"></i><i class="orb o2"></i>
+  <button id="gear" class="round glass" aria-label="Settings" aria-expanded="false">⚙</button>
+  <div id="settings" class="glass panel" hidden>
+    <label>Sensitivity <input type="range" id="sens" min="1" max="5" value="3"><span id="sensV">3</span></label>
+    <label>Sound <button class="tg" id="snd" aria-pressed="true">On</button></label>
+    <label>Visual effects <button class="tg" id="fxb" aria-pressed="true">High</button></label>
+  </div>
+  <div class="menu-in">
+    <div id="camPill" class="pill" data-s="prompt"><i></i><span>Checking camera…</span></div>
+    <h1>FRUIT NINJA</h1>
+    <div class="hero" aria-hidden="true">
+      <svg viewBox="0 0 400 400">
+        <defs>
+          <radialGradient id="gf" cx="42%" cy="38%" r="70%"><stop offset="0" stop-color="#ff8aa1"/><stop offset=".55" stop-color="#ff3d68"/><stop offset="1" stop-color="#c4103a"/></radialGradient>
+          <linearGradient id="gr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#46c46a"/><stop offset="1" stop-color="#136a30"/></linearGradient>
+          <clipPath id="cl"><rect x="-20" y="-20" width="220" height="440"/></clipPath>
+          <clipPath id="cr"><rect x="200" y="-20" width="220" height="440"/></clipPath>
+          <g id="m">
+            <circle cx="200" cy="200" r="172" fill="url(#gr)"/>
+            <circle cx="200" cy="200" r="160" fill="none" stroke="#0e5224" stroke-width="12" stroke-dasharray="46 30" opacity=".45"/>
+            <circle cx="200" cy="200" r="150" fill="#eefbd2"/>
+            <circle cx="200" cy="200" r="138" fill="url(#gf)"/>
+            <g fill="#2a0a14"><ellipse cx="150" cy="150" rx="7" ry="12" transform="rotate(-30 150 150)"/><ellipse cx="250" cy="146" rx="7" ry="12" transform="rotate(28 250 146)"/><ellipse cx="120" cy="215" rx="7" ry="12" transform="rotate(-70 120 215)"/><ellipse cx="282" cy="218" rx="7" ry="12" transform="rotate(70 282 218)"/><ellipse cx="170" cy="262" rx="7" ry="12" transform="rotate(-15 170 262)"/><ellipse cx="232" cy="268" rx="7" ry="12" transform="rotate(18 232 268)"/><ellipse cx="200" cy="205" rx="7" ry="12"/></g>
+            <path d="M92 150A128 128 0 0 1 160 80" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".35"/>
+          </g>
+        </defs>
+        <g transform="rotate(-32 200 200)"><use href="#m" clip-path="url(#cl)" class="hl"/><use href="#m" clip-path="url(#cr)" class="hr"/></g>
+      </svg>
+      <b class="slash"></b>
+    </div>
+    <p class="sub">SLICE THE MOMENT.</p>
+    <div id="modes" class="glass">
+      <button class="mode on" data-m="classic"><b>Classic</b><i>3 lives. Don't miss fruit, don't hit bombs.</i></button>
+      <button class="mode" data-m="zen"><b>Zen</b><i>60 seconds. No bombs, no pressure.</i></button>
+      <button class="mode" data-m="arcade"><b>Arcade</b><i>60 seconds. Fast, double points, bombs cost 10.</i></button>
+    </div>
+    <div class="row"><button class="big" id="start">Play now</button><button class="ghost" id="how">How to play</button></div>
+    <button class="link" id="mouseStart">Play with mouse instead</button>
+  </div>
+</section>
+
+<section class="screen" id="howto"><div class="card">
+  <h2>How to play</h2>
+  <ol class="steps">
+    <li><b>Raise your hand</b><span>Sit an arm's length from the camera with good light.</span></li>
+    <li><b>Point your index finger</b><span>Its tip is your blade. Wait for the green "Hand tracked" badge.</span></li>
+    <li><b>Swipe fast through fruit</b><span>Chain three cuts quickly for a combo. Slice bombs and you pay for it.</span></li>
+  </ol>
+  <p>No webcam? Use the mouse. Press Esc or P to pause.</p>
+  <div class="row"><button class="big" id="howBack">Got it</button></div>
+</div></section>
+
+<section class="screen" id="loading"><div class="card"><div class="spin"></div><p id="loadMsg">Loading…</p></div></section>
+
+<section class="screen low" id="practice"><div class="card">
+  <h2>Warm up</h2>
+  <p>Hold up your hand, point your index finger and swipe fast through the practice fruit. Begin unlocks once your hand is tracked.</p>
+  <div class="row"><button class="big" id="begin" disabled>Begin game</button><button class="ghost" id="backP">Back</button></div>
+</div></section>
+
+<section class="screen" id="pause"><div class="card"><h2>Paused</h2>
+  <div class="row"><button class="big" id="resume">Resume</button><button class="ghost" id="restart">Restart</button><button class="ghost" id="toMenu">Menu</button></div>
+</div></section>
+
+<section class="screen" id="over"><div class="card"><h2 id="overT">Game over</h2>
+  <div class="final" id="finalScore">0</div><p id="finalBest"></p>
+  <div class="row"><button class="big" id="again">Play again</button><button class="ghost" id="overMenu">Menu</button></div>
+</div></section>
+
+<section class="screen" id="error"><div class="card"><h2>Something went wrong</h2><p id="errMsg"></p>
+  <div class="row"><button class="big" id="retry">Try camera again</button><button class="ghost" id="errMouse">Use mouse</button><button class="ghost" id="errBack">Back</button></div>
+</div></section>
+
+<script src="script.js"></script>
+</body>
+</html>
